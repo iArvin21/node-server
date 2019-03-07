@@ -39,8 +39,27 @@ function listenPort() {
   console.log(`Listening for request on port ${PORT}`);
 }
 
+
 app.get("/task", (req,res) => {
     con.query("SELECT * FROM tasks", function (err, result) {
+        if (err) throw err;
+        console.log("Result: " + result.map(e => console.log(e)));
+        return res.json(result); 
+      });
+});
+
+app.get("/task/query", (req,res) => {
+    console.log("ID:",req.query.id);
+    
+    con.query(`SELECT * FROM tasks where id_task=${req.query.id}`, function (err, result) {
+        if (err) throw err;
+        console.log("Result: " + result.map(e => console.log(e)));
+        return res.json(result); 
+      });
+});
+
+app.get("/task/:id", (req,res) => {
+    con.query(`SELECT * FROM tasks where id_task=${req.params.id}`, function (err, result) {
         if (err) throw err;
         console.log("Result: " + result.map(e => console.log(e)));
         return res.json(result); 
