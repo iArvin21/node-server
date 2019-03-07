@@ -1,19 +1,7 @@
-const express = require( "express");
+import express from "express";
 import { load } from "dotenv";
-import { connect, connection } from "mongoose";
+import  TaskRoutes  from "./task";
 load();
-
-/* // Connect to mongodb database
-connect(
-  process.env.MONGODB_CONNECTION || "MONGODB_CONNECTION",
-  { useNewUrlParser: true }
-);
-
-// When connection is successful
-connection.once("open", () => console.log("Connected to mongodb database"));
-
-// When connection is failed
-connection.once("error", error => console.log("Failed connecting to database. \nError:", error.errors[0].err.errmsg)); */
 
 const mysql = require('mysql');
 
@@ -24,7 +12,7 @@ const con = mysql.createConnection({
   database: "hr_system"
 });
 
-con.connect(function(err) {
+con.connect((err:any) =>{
   if (err) throw err;
   console.log("Connected!");
 });
@@ -39,18 +27,8 @@ function listenPort() {
   console.log(`Listening for request on port ${PORT}`);
 }
 
-app.get("/task", (req,res) => {
-    con.query("SELECT * FROM tasks", function (err, result) {
-        if (err) throw err;
-        console.log("Result: " + result.map(e => console.log(e)));
-        return res.json(result); 
-      });
-});
-
-app.post("/task", (req,res) => {
-    res.json({message: "sucess"});
-});
+app.use("/task",TaskRoutes);
 
 app.listen(PORT, listenPort);
 
-export { app };
+export { app, con };
